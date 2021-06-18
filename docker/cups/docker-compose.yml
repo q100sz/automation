@@ -1,0 +1,17 @@
+version: '3'
+services:
+  cupsd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "631:631"
+      - "139:139"
+      - "445:445"
+    volumes:
+      - /docker/conf/cups/:/etc/cups
+      - /docker/conf/cron/:/etc/crontabs/
+      - /docker/data/samba/temporary:/temporary
+      - /docker/conf/samba:/etc/samba
+      - /kopia_smb:/kopia_smb
+    restart: always

@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      WORDPRESS_DB_HOST: maria_db
+      WORDPRESS_DB_USER: "${DBASE_USER}"
+      WORDPRESS_DB_PASSWORD: "${DBASE_PASSWD}"
+      WORDPRESS_DB_NAME: "${DBASE_NAME}"
+    volumes:
+      - /docker/data/wpress:/var/www/html
+
+  maria_db:
+    image: mariadb
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DBASE_ROOT_PASSWD}"
+      MYSQL_DATABASE: "${DBASE_NAME}"
+      MYSQL_USER: "${DBASE_USER}"
+      MYSQL_PASSWORD: "${DBASE_PASSWD}"
+    volumes:
+      - /docker/data/mysql:/var/lib/mysql
