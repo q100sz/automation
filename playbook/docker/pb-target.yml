@@ -1,0 +1,28 @@
+---
+- hosts: '{{ target }}'
+  become: true
+  tasks:
+  - name: update apt
+    apt:
+      update_cache=yes 
+      force_apt_get=yes
+      cache_valid_time=3600
+  - name: install docker & docker-compose
+    apt:
+      name: ['docker', 'docker-compose']
+      state: present
+      update-cache: yes
+  - name: stop docker daemon
+    service:
+      name: docker
+      state: stopped
+  - name: start & enable docker
+    service: 
+      name: docker
+      state: started
+      enabled: yes
+  - name: add ansible to docker group
+    user: 
+      name: ansible
+      groups: docker
+      append: yes

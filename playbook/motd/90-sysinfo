@@ -1,0 +1,41 @@
+#!/bin/bash
+
+echo -e "\n\n"
+date=`date`
+
+cpu_load=`cat /proc/loadavg | awk '{print $1*100 "%"}'`
+
+memory_usage=`free -m | awk '($1=="Mem:"){memTotal=$2} ($2=="buffers/cache:"){memUsed=$3} END{printf "%.1f%%", memUsed/memTotal * 100}'`
+
+swap_usage=`free -m | awk '($1=="Swap:"){swapTotal=$2; swapUsed=$3} END{printf "%.1f%%", swapUsed/swapTotal * 100}'`
+
+disk_usage=`df -h | awk '{if($(NF) == "/") {print $(NF-1); exit;}}'`
+
+user_sessions=`users | wc -l`
+
+sys_uptime=`uptime | awk '{print $3 " " $4}' | sed s'/.$//'`
+
+running_processes=`ps aux | wc -l`
+
+used_ip=`ip a | grep eth0 | grep "inet" | awk -F "brd" '{print $1}' | cut -c10-30`
+
+COLOR_DEFAULT="\033[0m"
+COLOR_INFO="\033[0;32m"
+COLOR_VALUE="\033[0;33m"
+COLOR_START="\033[0;31m"
+
+printf "${COLOR_START}System Information on ${date}\n"
+printf "==================================================\n"
+printf "${COLOR_VALUE} -== $(cat /etc/hostname) ==-\n"
+printf "${COLOR_START}==================================================\n"
+printf "${COLOR_INFO}CPU Usage         :${COLOR_VALUE} %s\n" "${cpu_load}"
+printf "${COLOR_INFO}Memory Usage      :${COLOR_VALUE} %s\n" "${memory_usage}"
+printf "${COLOR_INFO}Swap Usage        :${COLOR_VALUE} %s\n" "${swap_usage}"
+printf "${COLOR_INFO}System Uptime     :${COLOR_VALUE} %s\n" "${sys_uptime}"
+printf "${COLOR_INFO}IP Address        :${COLOR_VALUE} %s\n" "${used_ip}"
+printf "${COLOR_INFO}Total Disk Usage  :${COLOR_VALUE} %s\n" "${disk_usage}"
+printf "${COLOR_INFO}Open Sessions     :${COLOR_VALUE} %s\n" "${user_sessions}"
+printf "${COLOR_INFO}Running Processes :${COLOR_VALUE} %s\n" "${running_processes}"
+printf "${COLOR_DEFAULT}"
+echo -e "\n"
+

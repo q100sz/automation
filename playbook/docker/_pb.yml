@@ -1,0 +1,28 @@
+---
+- hosts: docker
+  become: true
+  tasks:
+  - name: update apt
+    apt:
+      update_cache=yes 
+      force_apt_get=yes
+      cache_valid_time=3600
+  - name: install docker & docker-compose
+    apt:
+      name: "{{ item }}"
+      state: present
+      update-cache: yes
+    with_items:
+      - docker
+      - docker-compose
+  - name: stop docker daemon
+    service:
+      name: docker
+      state: stoped
+  - name: update docker json
+    shell: 'echo `{ "data-root": "/docker/images" }` > /etc/docker/daemon.json'
+  - name: start & enable docker
+    service: 
+      name: docker
+      state: started
+      enabled: yes

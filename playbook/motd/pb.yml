@@ -1,0 +1,18 @@
+---
+- hosts: '{{ target }}'
+  become: yes
+  tasks:
+  - name: copy motd header
+    copy:
+      src: ./00-header
+      dest: /etc/update-motd.d/
+      mode: '0744'
+  - name: copy motd sysinfo
+    copy:
+      src: ./90-sysinfo
+      dest: /etc/update-motd.d/
+      mode: '0744'
+  - name: remove old motd
+    file:
+      path: /etc/motd
+      state: absent
